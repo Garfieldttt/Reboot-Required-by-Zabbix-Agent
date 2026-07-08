@@ -1,0 +1,51 @@
+zabbix_export:
+  version: '7.0'
+  template_groups:
+    - uuid: 846977d1dfed4968bc5f8bdb363285bc
+      name: 'Templates/Operating systems'
+  templates:
+    - uuid: 6f2622e5e1ac41c195192447935d5850
+      template: 'Debian Reboot Required'
+      name: 'Debian Reboot Required'
+      description: |
+        Created by Thomas Rzen. 
+        
+        Checks /var/run/reboot-required on Debian/Ubuntu systems to detect pending reboots
+        after package updates (e.g. new kernel).
+        
+        For documentation, updates, and source code, visit:  
+        https://github.com/Garfieldttt/Reboot-Required-by-Zabbix-Agent/tree/zabbix
+      groups:
+        - name: 'Templates/Operating systems'
+      items:
+        - uuid: 03f121d580a1421694ff5974a1a01721
+          name: 'Reboot required - packages'
+          type: ZABBIX_ACTIVE
+          key: 'vfs.file.contents[/var/run/reboot-required.pkgs]'
+          delay: 1h
+          history: 7d
+          value_type: TEXT
+          trends: '0'
+          description: 'Packages that triggered the reboot-required flag.'
+        - uuid: fa47e07fda3c4d0fa1c2d1e9ad8983a9
+          name: 'Reboot required'
+          type: ZABBIX_ACTIVE
+          key: 'vfs.file.exists[/var/run/reboot-required]'
+          delay: 1h
+          description: 'Whether /var/run/reboot-required exists (1 = reboot pending, 0 = not required).'
+          valuemap:
+            name: 'Debian Reboot Required'
+          triggers:
+            - uuid: 9ec2683c21b842cab4944451563d6629
+              expression: 'last(/Debian Reboot Required/vfs.file.exists[/var/run/reboot-required])=1'
+              name: 'Reboot required on {HOST.NAME}'
+              priority: AVERAGE
+              manual_close: 'YES'
+      valuemaps:
+        - uuid: 98c65242366443a9bf231917dbcfd5ea
+          name: 'Debian Reboot Required'
+          mappings:
+            - value: '0'
+              newvalue: 'not required'
+            - value: '1'
+              newvalue: required
