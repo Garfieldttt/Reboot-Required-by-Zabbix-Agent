@@ -22,7 +22,7 @@ zabbix_export:
           name: 'Reboot required - packages'
           type: ZABBIX_ACTIVE
           key: 'vfs.file.contents[/var/run/reboot-required.pkgs]'
-          delay: 1h
+          delay: 5m
           history: 7d
           value_type: TEXT
           trends: '0'
@@ -31,7 +31,7 @@ zabbix_export:
           name: 'Reboot required'
           type: ZABBIX_ACTIVE
           key: 'vfs.file.exists[/var/run/reboot-required]'
-          delay: 1h
+          delay: 5m
           description: 'Whether /var/run/reboot-required exists (1 = reboot pending, 0 = not required).'
           valuemap:
             name: 'Debian Reboot Required'
